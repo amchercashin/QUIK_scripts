@@ -12,6 +12,7 @@ function OnInit()
 	if Position == 0 then
 		-- Создает строку с заголовками столбцов
 		local Header = "Дата и время;Объем п. сделки;Цена п. сделки;Время п. сделки"
+    Header = Header..";BID;BIDDEPTH;BIDDEPTHT;NUMBIDS;OFFER;OFFERDEPTH;OFFERDEPTHT;NUMOFFERS"
     for i = 1, 20 do
       Header = Header..";Покупка_объем_"..i..";Покупка_цена_"..i
     end
@@ -51,9 +52,17 @@ function OnQuote(class, sec)
          ql2 = getQuoteLevel2(class, sec);
       -- Представляет снимок СТАКАНА в виде СТРОКИ
          QuoteStr = os.date()..";"
-         QuoteStr = QuoteStr..tonumber(getParamEx(class,  sec, "QTY").param_value)..";"
-         QuoteStr = QuoteStr..tonumber(getParamEx(class,  sec, "LAST").param_value)..";"
-         QuoteStr = QuoteStr..getParamEx(class,  sec, "TIME").param_value..";"
+         QuoteStr = QuoteStr..tonumber(getParamEx(class,  sec, "QTY").param_value)..";"  --Количество в последней сделке
+         QuoteStr = QuoteStr..tonumber(getParamEx(class,  sec, "LAST").param_value)..";" --Цена последней сделки
+         QuoteStr = QuoteStr..getParamEx(class,  sec, "TIME").param_value..";"           --Время последней сделки
+         QuoteStr = QuoteStr..getParamEx(class,  sec, "BID").param_value..";"            --Лучшая цена спроса
+         QuoteStr = QuoteStr..getParamEx(class,  sec, "BIDDEPTH").param_value..";"       --Спрос по лучшей цене
+         QuoteStr = QuoteStr..getParamEx(class,  sec, "BIDDEPTHT").param_value..";"      --Суммарный спрос
+         QuoteStr = QuoteStr..getParamEx(class,  sec, "NUMBIDS").param_value..";"        --Количество заявок на покупку
+         QuoteStr = QuoteStr..getParamEx(class,  sec, "OFFER").param_value..";"          --Лучшая цена предложения
+         QuoteStr = QuoteStr..getParamEx(class,  sec, "OFFERDEPTH").param_value..";"     --Предложение по лучшей цене
+         QuoteStr = QuoteStr..getParamEx(class,  sec, "OFFERDEPTHT").param_value..";"    --Суммарное предложение
+         QuoteStr = QuoteStr..getParamEx(class,  sec, "NUMOFFERS").param_value..";"      --Количество заявок на продажу
          for i = 1, tonumber(ql2.bid_count), 1 do
             if ql2.bid[i].quantity ~= nil then   -- На некоторых ценах могут отсутствовать заявки
                QuoteStr = QuoteStr..tostring(tonumber(ql2.bid[i].quantity))..";"..tostring(tonumber(ql2.bid[i].price))..";";
