@@ -13,13 +13,13 @@ function OnInit()
 	-- Если файл еще пустой
 	if Position == 0 then
 		-- Создает строку с заголовками столбцов
-		local Header = "Дата и время;Объем п. сделки;Цена п. сделки;Время п. сделки"
-    Header = Header..";BID;BIDDEPTH;BIDDEPTHT;NUMBIDS;OFFER;OFFERDEPTH;OFFERDEPTHT;NUMOFFERS"
+		local Header = "Time;Last_volume;Last_price;Last_time"
+    Header = Header..";Bid;Bid_depth;Bid_depthT;Numbids;Offer;Offer_depth;Offer_depthT;Numoffers"
     for i = 1, 20 do
-      Header = Header..";Покупка_объем_"..i..";Покупка_цена_"..i
+      Header = Header..";Bid_vol_"..i..";Bid_price_"..i
     end
     for i = 1, 20 do
-      Header = Header..";Продажа_объем_"..i..";Продажа_цена_"..i
+      Header = Header..";Offer_vol_"..i..";Offer_price_"..i
     end
     Header = Header.."\n"
 		-- Добавляет строку заголовков в файл
