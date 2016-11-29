@@ -1,19 +1,19 @@
 -- НАСТРОЙКИ
-Run = true;		-- Флаг поддержания работы скрипта
+Run = true; -- Флаг поддержания работы скрипта
 local class = "TQBR"; -- Класс бумаги для выгрузки данных - основной рынок
 local sec = "ALRS"; -- Код бумаги
 local interval = 10 -- интервал в секундах для выгрузки показателей
 --
 -- Вызывается терминалом QUIK в момент запуска скрипта
 function OnInit()
-	-- Создает, или открывает для чтения/добавления файл CSV в той же папке, где находится данный скрипт
-	CSV = io.open(getScriptPath().."/MyTrades.csv", "a+");
-	-- Встает в конец файла, получает номер позиции
-	local Position = CSV:seek("end",0);
-	-- Если файл еще пустой
-	if Position == 0 then
-		-- Создает строку с заголовками столбцов
-		local Header = "Time;Last_volume;Last_price;Last_time"
+  -- Создает, или открывает для чтения/добавления файл CSV в той же папке, где находится данный скрипт
+  CSV = io.open(getScriptPath().."/MyTrades.csv", "a+");
+  -- Встает в конец файла, получает номер позиции
+  local Position = CSV:seek("end",0);
+  -- Если файл еще пустой
+  if Position == 0 then
+    -- Создает строку с заголовками столбцов
+    local Header = "Time;Last_volume;Last_price;Last_time"
     Header = Header..";Bid;Bid_depth;Bid_depthT;Numbids;Offer;Offer_depth;Offer_depthT;Numoffers"
     for i = 1, 20 do
       Header = Header..";Bid_vol_"..i..";Bid_price_"..i
@@ -22,19 +22,19 @@ function OnInit()
       Header = Header..";Offer_vol_"..i..";Offer_price_"..i
     end
     Header = Header.."\n"
-		-- Добавляет строку заголовков в файл
-		CSV:write(Header);
-		-- Сохраняет изменения в файле
-		CSV:flush();
-	end;
+    -- Добавляет строку заголовков в файл
+    CSV:write(Header);
+    -- Сохраняет изменения в файле
+    CSV:flush();
+  end;
 end;
 
 -- Вызывается терминалом QUIK в момент остановки скрипта
 function OnStop()
-	-- Выключает флаг, чтобы остановить цикл while внутри main
-	Run = false;
-	-- Закрывает открытый CSV-файл
-	CSV:close();
+  -- Выключает флаг, чтобы остановить цикл while внутри main
+  Run = false;
+  -- Закрывает открытый CSV-файл
+  CSV:close();
 end;
 
 -- Подписываемся на данные из стакана по бумаге
@@ -56,8 +56,8 @@ function getdata()
          QuoteStr = QuoteStr..getParamEx(class,  sec, "OFFERDEPTH").param_value..";"     --Предложение по лучшей цене
          QuoteStr = QuoteStr..getParamEx(class,  sec, "OFFERDEPTHT").param_value..";"    --Суммарное предложение
          QuoteStr = QuoteStr..getParamEx(class,  sec, "NUMOFFERS").param_value..";"      --Количество заявок на продажу
-				 -- Представляет снимок СТАКАНА в виде СТРОКИ
-				 ql2 = getQuoteLevel2(class, sec);
+         -- Представляет снимок СТАКАНА в виде СТРОКИ
+         ql2 = getQuoteLevel2(class, sec);
          for i = 1, tonumber(ql2.bid_count), 1 do
             if ql2.bid[i].quantity ~= nil then   -- На некоторых ценах могут отсутствовать заявки
                QuoteStr = QuoteStr..tostring(tonumber(ql2.bid[i].quantity))..";"..tostring(tonumber(ql2.bid[i].price))..";";
@@ -76,19 +76,19 @@ function getdata()
    -- Записывает строку в файл
         QuoteStr = QuoteStr.."\n"
         --message(QuoteStr)
-	      CSV:write(QuoteStr);
+        CSV:write(QuoteStr);
    -- Сохраняет изменения в файле
-	      CSV:flush();
+        CSV:flush();
     end;
 end;
 
 -- Основная функция скрипта (пока работает она, работает скрипт)
 function main()
-	-- Цикл, поддерживающий работу скрипта
-	while Run do
-		getdata()
-		sleep(1000);
-	end;
+  -- Цикл, поддерживающий работу скрипта
+  while Run do
+    getdata()
+    sleep(1000);
+  end;
 end;
 
 -- В результате при каждом обновлении стакана по инструменту RTS-6.15 в переменной QuoteStr будет строка, типа:
