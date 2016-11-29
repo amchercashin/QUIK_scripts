@@ -43,8 +43,7 @@ Subscribe_Level_II_Quotes(class, sec);
 -- Основная функция забора данных, вызывается из main()
 function getdata()
     if os.date("%S") % interval == 0 then
-         ql2 = getQuoteLevel2(class, sec);
-      	 -- Доп.данные
+         -- Доп.данные
          QuoteStr = os.date()..";"
          QuoteStr = QuoteStr..tonumber(getParamEx(class,  sec, "QTY").param_value)..";"  --Количество в последней сделке
          QuoteStr = QuoteStr..tonumber(getParamEx(class,  sec, "LAST").param_value)..";" --Цена последней сделки
@@ -58,6 +57,7 @@ function getdata()
          QuoteStr = QuoteStr..getParamEx(class,  sec, "OFFERDEPTHT").param_value..";"    --Суммарное предложение
          QuoteStr = QuoteStr..getParamEx(class,  sec, "NUMOFFERS").param_value..";"      --Количество заявок на продажу
 				 -- Представляет снимок СТАКАНА в виде СТРОКИ
+				 ql2 = getQuoteLevel2(class, sec);
          for i = 1, tonumber(ql2.bid_count), 1 do
             if ql2.bid[i].quantity ~= nil then   -- На некоторых ценах могут отсутствовать заявки
                QuoteStr = QuoteStr..tostring(tonumber(ql2.bid[i].quantity))..";"..tostring(tonumber(ql2.bid[i].price))..";";
